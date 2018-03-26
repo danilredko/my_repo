@@ -135,4 +135,19 @@ plot_q3(my_range, " c) ", left_q3_c, right_q3_c, "e^(-2x)+e^x", "x+4")
 
 
 
+print("---------------------------------QUESTION 4---------------------------------")
+
+
+def f(x):
+
+    a = np.exp(np.negative(np.dot(2,x)))
+
+    b = np.exp(x)
+
+    return np.add(a,b)
+
+
+def df(x):
+
+    return np.subtract(np.subtract(np.exp(x), np.exp(np.negative(np.dot(2, x))) ), 1)
 
