@@ -7,6 +7,7 @@ import numpy.linalg as lin
 import scipy.linalg as la
 import numpy.random as rnd
 import math
+import scipy.optimize as opt
 
 
 print("---------------------------------QUESTION 1---------------------------------")
@@ -127,27 +128,54 @@ right_q3_c = right_q3_c(my_range)
 
 # Plotting a,b,c
 
+""" UNCOMMENT THEM
 plot_q3(my_range, " a) ", left_q3_a, right_q3_a, "x^3-5x^3+8x-4", "0")
 
 plot_q3(my_range, " b) ", left_q3_b, right_q3_b, "xcos(20x)", "x^3")
 
 plot_q3(my_range, " c) ", left_q3_c, right_q3_c, "e^(-2x)+e^x", "x+4")
-
+"""
 
 
 print("---------------------------------QUESTION 4---------------------------------")
 
 
+
 def f(x):
 
-    a = np.exp(np.negative(np.dot(2,x)))
-
-    b = np.exp(x)
-
-    return np.add(a,b)
+    return math.exp(-2*x) + math.exp(x) - x - 4
 
 
 def df(x):
 
-    return np.subtract(np.subtract(np.exp(x), np.exp(np.negative(np.dot(2, x))) ), 1)
+    return math.exp(x) - 2*math.exp(-2*x) - 1
+
+'''
+root = opt.newton(f, 2 , fprime=df, tol=1e-11)
+
+print("root is " +str(root))
+'''
+
+
+def dx(f, x):
+    return math.fabs(0-f(x))
+
+
+def newtonsMethod(x, f, df , e ):
+
+    delta = dx(f,x)
+
+    while math.fabs(f(x)) > e and math.fabs(delta) > e:
+
+        x = x - f(x)/df(x)
+
+        delta = dx(f, x)
+
+        print "| x = "+str(x)+" | f(x) = " + str(f(x))+" | deltaX = "+str(delta)
+
+
+newtonsMethod(2, f , df, 1e-11)
+
+
+
 
