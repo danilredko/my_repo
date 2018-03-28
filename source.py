@@ -185,13 +185,13 @@ print("---------------------------------QUESTION 6 b----------------------------
 # b)
 
 
-def f(x0, x1):
+def fq6(x0, x1):
 
     a = math.pow(x0,2)+x0*x1 + math.pow(x1,2) - 3*x0 - x1 - 3
 
     b = 2*math.pow(x0,2) - x0*x1 - math.pow(x1,2) + x0 + 2*x1 - 1
 
-    return np.array([a,b])
+    return np.array([a, b])
 
 
 def df0x0(x0, x1):
@@ -225,19 +225,19 @@ def q6b(x):
 
     while counter < 10:
 
-        s_k = np.negative(np.dot(lin.inv(J(x[0],x[1])), f(x[0],x[1])))
+        s_k = np.negative(np.dot(lin.inv(J(x[0],x[1])), fq6(x[0],x[1])))
 
         x += s_k
 
         counter += 1
 
-        print "x: "+str(x)+" ; norm of s: "+str(lin.norm(s_k))+"; norm of y: "+str(lin.norm(f(x[0],x[1])))
+        print "x: "+str(x)+" ; norm of s: "+str(lin.norm(s_k))+"; norm of y: "+str(lin.norm(fq6(x[0],x[1])))
 
 
 # c)
 
 
-def mysolve(A,b):
+def mysolveQ6(A,b):
 
     P,L,U = la.lu(A)
     c = np.dot(np.transpose(P),b)
@@ -252,11 +252,11 @@ def q6c(x):
 
     while counter < 10:
 
-        s_k = mysolve(J(x[0],x[1]), np.negative(f(x[0],x[1])))
+        s_k = mysolveQ6(J(x[0],x[1]), np.negative(fq6(x[0], x[1])))
         x += s_k
         counter += 1
 
-        print "x: "+str(x)+" ; norm of s: "+str(lin.norm(s_k))+"; norm of y: "+str(lin.norm(f(x[0],x[1])))
+        print "x: "+str(x)+" ; norm of s: "+str(lin.norm(s_k))+"; norm of y: "+str(lin.norm(fq6(x[0],x[1])))
 
 
 """UNCOMMENT
@@ -268,4 +268,95 @@ q6c([0,0])
 """
 
 
+print("---------------------------------QUESTION 8 ---------------------------------")
 
+
+def fq8(x0, x1):
+
+    return 2*math.pow(x0, 4)+3*math.pow(x1, 4)-2*math.pow(x0, 2)*math.pow(x1, 2) - math.pow(x0, 2) - 4*math.pow(x1, 2) + 7
+
+# a)
+
+
+def gradient(x0, x1):
+
+    a = 8*math.pow(x0, 3) - 2*math.pow(x1, 2)*x0 - 2*x0
+
+    b = 12*math.pow(x1, 3) - 2*math.pow(x0, 2)*x1 - 8*x1
+
+    return np.array([a, b])
+
+# b)
+
+
+def dfx0x0(x0, x1):
+
+    return 24*x0*x0 - 2*x1*x1 - 2
+
+
+def dfx0x1(x0, x1):
+
+    return -4*x0*x1
+
+
+def dfx1x1(x0, x1):
+
+    return 36*math.pow(x1, 2) - 2*math.pow(x0, 2) - 8
+
+
+def Hessian(x0, x1):
+
+    return np.array([[dfx0x0(x0, x1), dfx0x1(x0, x1)], [dfx0x1(x0, x1), dfx1x1(x0, x1)]])
+
+
+# c)
+
+def q8c(x):
+
+    counter = 0
+
+    while counter < 10:
+
+        s_k = np.negative(np.dot(lin.inv(Hessian(x[0], x[1])), gradient(x[0],x[1])))
+
+        x += s_k
+
+        counter += 1
+
+        y = fq8(x[0], x[1])
+
+        print "x: "+str(x)+" ; norm of s: "+str(lin.norm(s_k))+"; value of y: "+str(y)
+
+
+# d)
+
+
+def mysolveQ8(A,b):
+
+    L = la.cholesky(A, lower=True)
+    Lt = la.cholesky(A, lower=False)
+    y = la.solve_triangular(L, b , lower=True)
+    x = la.solve_triangular(Lt, y, lower=False)
+    return x
+
+
+def q8d(x):
+
+    counter = 0
+
+    while counter < 10:
+
+        s_k = mysolveQ8(Hessian(x[0],x[1]), np.negative(gradient(x[0], x[1])))
+        x += s_k
+        counter += 1
+
+        y = fq8(x[0], x[1])
+
+        print "x: "+str(x)+" ; norm of s: "+str(lin.norm(s_k))+"; value of y: "+str(y)
+
+'''
+print("--------------------------------- QUESTION 8 c) ---------------------------------")
+q8c([1, 1])
+print("--------------------------------- QUESTION 8 d) ---------------------------------")
+q8d([1, 1])
+'''
