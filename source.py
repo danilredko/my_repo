@@ -9,7 +9,7 @@ import numpy.random as rnd
 import math
 import scipy.optimize as opt
 
-
+"""
 print("---------------------------------QUESTION 1---------------------------------")
 
 
@@ -54,7 +54,7 @@ H = np.subtract(np.identity(4), np.dot(2,np.divide(np.multiply(v,np.transpose(v)
 print(H)
 
 print("---------------------------------QUESTION 3---------------------------------")
-
+"""
 # a)
 
 def plot_q3(my_range, title, left, right, leftLabel, rightLabel):
@@ -140,7 +140,6 @@ plot_q3(my_range, " c) ", left_q3_c, right_q3_c, "e^(-2x)+e^x", "x+4")
 print("---------------------------------QUESTION 4---------------------------------")
 
 
-
 def f(x):
 
     return math.exp(-2*x) + math.exp(x) - x - 4
@@ -158,10 +157,11 @@ print("root is " +str(root))
 
 
 def dx(f, x):
+
     return math.fabs(0-f(x))
 
 
-def newtonsMethod(x, f, df , e ):
+def newtonsMethod(x, f, df, e):
 
     delta = dx(f,x)
 
@@ -173,9 +173,99 @@ def newtonsMethod(x, f, df , e ):
 
         print "| x = "+str(x)+" | f(x) = " + str(f(x))+" | deltaX = "+str(delta)
 
+""" UNCOMMENT THEM
 
-newtonsMethod(2, f , df, 1e-11)
+newtonsMethod(2, f, df, 1e-11)
 
+"""
+
+
+print("---------------------------------QUESTION 6 b---------------------------------")
+
+# b)
+
+
+def f(x0, x1):
+
+    a = math.pow(x0,2)+x0*x1 + math.pow(x1,2) - 3*x0 - x1 - 3
+
+    b = 2*math.pow(x0,2) - x0*x1 - math.pow(x1,2) + x0 + 2*x1 - 1
+
+    return np.array([a,b])
+
+
+def df0x0(x0, x1):
+
+    return 2*x0 - 3 + x1
+
+
+def df0x1(x0, x1):
+
+    return x0 + 2*x1 - 1
+
+
+def df1x0(x0, x1):
+
+    return 4*x0 - x1 + 1
+
+
+def df1x1(x0, x1):
+
+    return 2 - 2*x1 - x0
+
+
+def J(x0, x1):
+
+    return np.array([[df0x0(x0, x1), df0x1(x0, x1)], [df1x0(x0, x1), df1x1(x0, x1)]])
+
+
+def q6b(x):
+
+    counter = 0
+
+    while counter < 10:
+
+        s_k = np.negative(np.dot(lin.inv(J(x[0],x[1])), f(x[0],x[1])))
+
+        x += s_k
+
+        counter += 1
+
+        print "x: "+str(x)+" ; norm of s: "+str(lin.norm(s_k))+"; norm of y: "+str(lin.norm(f(x[0],x[1])))
+
+
+# c)
+
+
+def mysolve(A,b):
+
+    P,L,U = la.lu(A)
+    c = np.dot(np.transpose(P),b)
+    y = la.solve_triangular(L,c,lower=True)
+    x = la.solve_triangular(U,y,lower=False)
+    return x
+
+
+def q6c(x):
+
+    counter = 0
+
+    while counter < 10:
+
+        s_k = mysolve(J(x[0],x[1]), np.negative(f(x[0],x[1])))
+        x += s_k
+        counter += 1
+
+        print "x: "+str(x)+" ; norm of s: "+str(lin.norm(s_k))+"; norm of y: "+str(lin.norm(f(x[0],x[1])))
+
+
+"""UNCOMMENT
+
+q6b([0,0])
+print("---------------------------------QUESTION 6 c---------------------------------")
+q6c([0,0])
+
+"""
 
 
 
