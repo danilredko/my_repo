@@ -384,8 +384,121 @@ q8d([1, -1])
 print("--------------------------------- QUESTION 9 ---------------------------------")
 
 
+mnist = np.load('npMnist.npy')
+
+Xtrain = mnist
+
+
+with open('tfMnist.pickle','rb'):
+    new_mnist = pickle.load(f)
+
+Xtest = new_mnist.test.images
+
+
+c = []
+k = []
+
+# c)
 
 def matfact(X, K):
+
+    # Random matrix A
+
+    counter = 0
+    M, N = X.shape
+    A = rnd.rand(M, K)
+
+    while counter < 10:
+
+        # Solve for Z:
+
+        Z = lin.lstsq(A, X)[0]
+
+        TSE1 = np.sum(np.power(np.subtract(X, np.dot(A,Z)),2))
+
+        MSE1 = np.divide(TSE1, M*N)
+
+        c.append(MSE1)
+
+        print("MSE 1: "+str(MSE1))
+
+        # Solve for A:
+        A = np.transpose(lin.lstsq(np.transpose(Z), np.transpose(X))[0])
+
+        TSE2 = np.sum(np.power(np.transpose(np.subtract(np.transpose(X), np.dot(np.transpose(Z),np.transpose(A)))),2))
+
+        MSE2 = np.divide(TSE2,M*N)
+
+        k.append(MSE2)
+
+        print("MSE 2: "+str(MSE2))
+
+        counter+=1
+
+    return [np.dot(A, Z), A , Z]
+
+
+#matfact(rnd.rand(784,700), 100)
+
+
+def strictly_decreasing(L):
+    return all(x>y for x, y in zip(L, L[1:]))
+
+
+print(strictly_decreasing(c))
+print(strictly_decreasing(k))
+
+
+# d)
+'''
+matfact(Xtrain, 100)
+'''
+# e)
+
+reconsImages = matfact(Xtrain, 100)[0]
+
+
+
+def my_show_4_by_4(x, title):
+
+    my_rand = np.arange(16)
+    rnd.shuffle(my_rand)
+    plt.figure()
+    plt.suptitle(title)
+
+    for i in range(1,17):
+        plt.subplot(4,4,i)
+        plt.imshow(np.reshape(x[i],[28,28]), cmap="Greys")
+        plt.axis('off')
+    plt.show()
+
+'''
+my_show_4_by_4(reconsImages, "Question 9(e): reconstructed images")
+'''
+
+# f)
+
+# Random matrix A
+
+Arand = rnd.rand(784,100)
+
+
+# g)
+'''
+plt.hist(reconsImages, 100)
+plt.show()
+'''
+
+# h)
+"""
+reconsImages[reconsImages < 0] = 0
+reconsImages[reconsImages > 1] = 1
+my_show_4_by_4(reconsImages, "Question 9(h): reconstructed images")
+"""
+
+# i)
+
+
 
 
 
